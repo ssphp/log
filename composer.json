@@ -1,0 +1,22 @@
+{
+    "name": "slog/slog",
+    "description": "hfjy php log standard",
+    "keywords": ["slog"],
+    "homepage": "https://github.com/qishaobo/slog",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "qishaobo",
+            "email": "qishaobo@hfjy.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7.0.0",
+        "standard/log": "~1.0"
+    },
+    "autoload": {
+        "psr-4": {"Slog\\": "src/Slog"}
+    }
+}
