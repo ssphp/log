@@ -21,7 +21,7 @@ class Logger extends AbstractLogger
      *
      * @var array
      */
-    protected static $config = [];
+    private static $config = [];
 
     public function __construct(array $config = [])
     {
@@ -64,7 +64,7 @@ class Logger extends AbstractLogger
     /**
      * 日志内容包含的基本字段
      *
-     * @return   [type]     [description]
+     * @return   array
      */
     private function baseContent($logType)
     {
@@ -75,8 +75,24 @@ class Logger extends AbstractLogger
         ];
     }
 
+    /**
+     * 记录日志
+     *
+     *
+     * @param  array  $message 日志内容
+     * @param  string $logType 日志类型
+     * @param  string $level   日志级别
+     *
+     * @return array    
+     */
     public function log(array $message, string $logType = 'info', string $level = 'info')
     {
+        //未知类型
+        if (!isset(LogType::${$logType})) {
+            $logType = 'undefined';
+            $message = ['undefined' => json_encode($message, JSON_UNESCAPED_UNICODE)];
+        }
+
         //检查日志级别
         if (!$this->checkLevel($level)) {
             return [
@@ -85,16 +101,8 @@ class Logger extends AbstractLogger
             ];
         }
 
-        $baseContent = $this->baseContent($logType);
-        $message = empty($message) ? $baseContent : array_merge($baseContent, $message);
-
-        $logFields = $this->getFields($logType); //LogType::$$logType;
-        if (empty($logFields)) {
-            return [
-                'code' => '0x000001',
-                'data' => '日志类型不存在',
-            ];
-        }
+        $message = array_merge($this->baseContent($logType), $message);
+        $logFields = $this->getFields($logType);
 
         if (!$this->checkLogFields($message, $logFields)) {
             return [
@@ -104,8 +112,7 @@ class Logger extends AbstractLogger
         }
 
         $fiterObj = new Filter(self::$config);
-        $data = $fiterObj->fiter($message);
-        $result = $this->writeLog($data);
+        $result = $this->writeLog($fiterObj->fiter($message));
 
         return [
             'code' => '0x000000',
@@ -116,14 +123,14 @@ class Logger extends AbstractLogger
      * 检查必须包含字段
      *
      * @param  array  $message
-     * @param  array  $logType
+     * @param  array  $logFields
      *
      * @return bool
      */
     public function checkLogFields(array $message, array $logFields)
     {
-        if (empty($message)) {
-            return false;
+        if (empty($logFields)) {
+            return true;
         }
 
         foreach ($logFields as $field) {
@@ -142,7 +149,7 @@ class Logger extends AbstractLogger
      *
      * @return   array
      */
-    public function getFields($type)
+    private function getFields($type)
     {
         static $logFields;
 
@@ -166,7 +173,7 @@ class Logger extends AbstractLogger
      *
      * @return array
      */
-    public function handleFields($type)
+    private function handleFields($type)
     {
         if (!isset(LogType::${$type})) {
             return [];
@@ -193,19 +200,19 @@ class Logger extends AbstractLogger
      *
      * @return   bool
      */
-    protected function checkLevel(string $logLevel)
+    private function checkLevel(string $logLevel)
     {
         $settedLevel = isset(self::$config['level']) ? self::$config['level'] : 'info';
 
-        if (!LogLevel::$$settedLevel) {
+        if (!isset(LogLevel::$$settedLevel)) {
             throw new Exception("配置了未知的日志级别");
         }
 
-        if (LogLevel::$$logLevel < LogLevel::$$settedLevel) {
-            return false;
+        if (!isset(LogLevel::$$logLevel)) {
+            $logLevel = 'info';
         }
 
-        return true;
+        return LogLevel::$$logLevel >= LogLevel::$$settedLevel;
     }
 
     /**
@@ -215,7 +222,7 @@ class Logger extends AbstractLogger
      *
      * @return   bool
      */
-    protected function writeLog(array $data)
+    private function writeLog(array $data)
     {
         //格式化日志
         if (empty(self::$config['formatter']) || !class_exists('\\Slog\\Formatter\\' . self::$config['formatter'])) {
@@ -232,7 +239,6 @@ class Logger extends AbstractLogger
         $collectObj = new \Slog\Collect\File($file, $lock);
         $collectObj->write($formatterObj->format($data));
         $collectObj->close();
-
         return true;
     }
 }
