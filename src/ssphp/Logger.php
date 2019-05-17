@@ -3,9 +3,9 @@
 namespace ssphp;
 
 use ssphp\Filter\Filter;
-use StdLog\AbstractLogger;
-use StdLog\LogLevel;
-use StdLog\LogType;
+use ssphp\Standard\Log\AbstractLogger;
+use ssphp\Standard\Log\LogLevel;
+use ssphp\Standard\Log\LogType;
 
 /**
  * 记录日志
