@@ -1,8 +1,8 @@
-# Slog - A log standard for PHP
+# ssphp/log - A log standard for PHP
 
 ## Intro
 在程序开发中写日志是一件非常重要，也是很容易被开发同学忽视的地方。日志记录不全，格式不统一给我们后期的搜集、分析和问题查找带来了很大的麻烦。基于以上问题推出一套统一约定的日志格式势在必行,
-Slog完全参照<a href="https://github.com/ssgo/standard/blob/master/log.md">ssgo日志标准</a>。
+ssphp完全参照<a href="https://github.com/ssgo/standard/blob/master/log.md">ssgo日志标准</a>。
 
 ## Directory structure
 
@@ -11,7 +11,7 @@ Slog完全参照<a href="https://github.com/ssgo/standard/blob/master/log.md">ss
 ├── README.md              # README
 ├── config                 # 配置文件            
 ├── src                
-│   └── Slog   
+│   └── ssphp   
 │       ├── Collect        # 日志收集方式
 │       ├── Filter         # 日志过滤规则
 │       ├── Formatter      # 日志输出格式
@@ -34,8 +34,8 @@ $ composer require slog/slog
 <?php
 require_once __DIR__ . "/vendor/autoload.php";
 
-$config = require_once __DIR__ . "/vendor/slog/slog/config/log.php";
-$debug = new Slog\Logger($config);
+$config = require_once __DIR__ . "/vendor/ssphp/ssphp/config/log.php";
+$debug = new ssphp\Logger($config);
 
 $result = $debug->dbError([
     'dbType' => 'mysql',
