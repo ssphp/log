@@ -1,6 +1,6 @@
 <?php
 
-namespace Slog\Formatter;
+namespace ssphp\Formatter;
 
 interface FormatterInterface
 {

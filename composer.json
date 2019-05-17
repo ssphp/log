@@ -17,6 +17,6 @@
         "standard/log": "~1.0"
     },
     "autoload": {
-        "psr-4": {"Slog\\": "src/Slog"}
+        "psr-4": {"ssphp\\": "src/ssphp"}
     }
 }

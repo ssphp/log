@@ -1,6 +1,6 @@
 <?php
 
-namespace Slog\Filter;
+namespace ssphp\Filter;
 
 /**
  * 日志过滤

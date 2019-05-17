@@ -1,6 +1,6 @@
 <?php
 
-namespace Slog\Collect;
+namespace ssphp\Collect;
 
 /**
  * 记录日志

@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . "/vendor/autoload.php";
 
-$config = require_once __DIR__ . "/vendor/slog/slog/config/log.php";
-$debug = new Slog\Logger($config);
+$config = require_once __DIR__ . "/vendor/ssphp/ssphp/config/log.php";
+$debug = new ssphp\Logger($config);
 
 $result = $debug->dbError([
     'dbType' => 'mysql',

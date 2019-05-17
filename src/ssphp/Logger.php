@@ -1,8 +1,8 @@
 <?php
 
-namespace Slog;
+namespace ssphp;
 
-use Slog\Filter\Filter;
+use ssphp\Filter\Filter;
 use StdLog\AbstractLogger;
 use StdLog\LogLevel;
 use StdLog\LogType;
@@ -83,7 +83,7 @@ class Logger extends AbstractLogger
      * @param  string $logType 日志类型
      * @param  string $level   日志级别
      *
-     * @return array    
+     * @return array
      */
     public function log(array $message, string $logType = 'info', string $level = 'info')
     {
