@@ -4,9 +4,9 @@ namespace Slog\Filter;
 
 /**
  * 日志过滤
- * 
+ *
  * qishaobo
- * 
+ *
  * 2019-05-16
  */
 class Filter
@@ -50,7 +50,9 @@ class Filter
             }
 
             //多维数组暂时不处理
-            if (!is_string($v) && !is_numeric($v)) {
+            if (is_array($v) || is_object($v)) {
+                $v = json_encode($v, JSON_UNESCAPED_UNICODE);
+            } else if (!is_string($v) && !is_numeric($v)) {
                 continue;
             }
 

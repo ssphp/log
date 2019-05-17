@@ -1,6 +1,6 @@
 <?php
 
-namespace Slog\Logger;
+namespace Slog;
 
 use Slog\Filter\Filter;
 use StdLog\AbstractLogger;
@@ -41,7 +41,7 @@ class Logger extends AbstractLogger
             return;
         }
 
-        $baseConfig = require __DIR__ . '/../../../config/log.php';
+        $baseConfig = require __DIR__ . '/../../config/log.php';
         if (empty($config)) {
             self::$config = $baseConfig;
             return;
@@ -85,25 +85,23 @@ class Logger extends AbstractLogger
             ];
         }
 
-        //检查日志包含字段
-        if (!isset(LogType::$$logType)) {
+        $baseContent = $this->baseContent($logType);
+        $message = empty($message) ? $baseContent : array_merge($baseContent, $message);
+
+        $logFields = $this->getFields($logType); //LogType::$$logType;
+        if (empty($logFields)) {
             return [
                 'code' => '0x000001',
                 'data' => '日志类型不存在',
             ];
         }
 
-        $logFields = LogType::$$logType;
-        if (!$this->checkLogParam($message, $logFields)) {
+        if (!$this->checkLogFields($message, $logFields)) {
             return [
                 'code' => '0x000002',
                 'message' => '日志内容缺少必填字段',
             ];
         }
-
-        //记录日志
-        $baseContent = $this->baseContent($logType);
-        $message = empty($message) ? $baseContent : array_merge($baseContent, $message);
 
         $fiterObj = new Filter(self::$config);
         $data = $fiterObj->fiter($message);
@@ -122,22 +120,10 @@ class Logger extends AbstractLogger
      *
      * @return bool
      */
-    public function checkLogParam(array $message, array $logFields)
+    public function checkLogFields(array $message, array $logFields)
     {
         if (empty($message)) {
             return false;
-        }
-
-        if (!empty($logFields['extendFields'])) {
-            foreach ($logFields['extendFields'] as $v) {
-                if (!isset(LogType::$$v)) {
-                    continue;
-                }
-
-                $logFields = array_merge($logFields, LogType::$$v);
-            }
-
-            unset($logFields['extendFields']);
         }
 
         foreach ($logFields as $field) {
@@ -164,20 +150,40 @@ class Logger extends AbstractLogger
             return $logFields[$type];
         }
 
-        if (!isset(self::${$type})) {
+        if (!isset(LogType::${$type})) {
             return $logFields[$type] = [];
         }
 
-        $fields = self::${$type};
-        if (!empty($extendFields = $fields['extendFields'])) {
-            unset($fields['extendFields']);
-            foreach ($extendFields as $field) {
-                $fieldVal = isset(self::${$field}) ? self::${$field} : [];
-                $fields = call_user_func('array_merge', $fields, $fieldVal);
-            }
-        }
+        $fields = $this->handleFields($type);
 
         return $logFields[$type] = $fields;
+    }
+
+    /**
+     * 递归日志类型字段
+     *
+     * @param  string $type
+     *
+     * @return array
+     */
+    public function handleFields($type)
+    {
+        if (!isset(LogType::${$type})) {
+            return [];
+        }
+
+        $fields = LogType::${$type};
+        if (empty($fields['extendFields'])) {
+            return $fields;
+        }
+
+        $extendFields = $fields['extendFields'];
+        unset($fields['extendFields']);
+        foreach ($extendFields as $field) {
+            $fields = call_user_func('array_merge', $fields, $this->handleFields($field));
+        }
+
+        return $fields;
     }
 
     /**

@@ -2,7 +2,7 @@
 require_once __DIR__ . "/vendor/autoload.php";
 
 $config = require_once __DIR__ . "/vendor/slog/slog/config/log.php";
-$debug = new Slog\Logger\Logger($config);
+$debug = new Slog\Logger($config);
 
 $result = $debug->dbError([
     'dbType' => 'mysql',

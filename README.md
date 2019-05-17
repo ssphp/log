@@ -12,10 +12,10 @@ Slog完全参照<a href="https://github.com/ssgo/standard/blob/master/log.md">ss
 ├── config                 # 配置文件            
 ├── src                
 │   └── Slog   
+│       ├── Collect        # 日志收集方式
 │       ├── Filter         # 日志过滤规则
 │       ├── Formatter      # 日志输出格式
-│       ├── Logger         # 日志类型
-│       └── Standard       # 日志标准
+│       └── Logger.php     # 日记记录脚本
 └── tests                  # 测试脚本
 
 ```
@@ -35,7 +35,7 @@ $ composer require slog/slog
 require_once __DIR__ . "/vendor/autoload.php";
 
 $config = require_once __DIR__ . "/vendor/slog/slog/config/log.php";
-$debug = new Slog\Logger\Logger($config);
+$debug = new Slog\Logger($config);
 
 $result = $debug->dbError([
     'dbType' => 'mysql',
