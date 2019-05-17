@@ -225,10 +225,10 @@ class Logger extends AbstractLogger
     private function writeLog(array $data)
     {
         //格式化日志
-        if (empty(self::$config['formatter']) || !class_exists('\\Slog\\Formatter\\' . self::$config['formatter'])) {
-            $formatterObj = new \Slog\Formatter\Json();
+        if (empty(self::$config['formatter']) || !class_exists('\\ssphp\\Formatter\\' . self::$config['formatter'])) {
+            $formatterObj = new \ssphp\Formatter\Json();
         } else {
-            $class = '\\Slog\\Formatter\\' . self::$config['formatter'];
+            $class = '\\ssphp\\Formatter\\' . self::$config['formatter'];
             $formatterObj = new $class();
         }
 
@@ -236,7 +236,7 @@ class Logger extends AbstractLogger
         $file = !empty(self::$config['file']) ? self::$config['file'] : 'log/' . date("Ymd") . '/' . $data['logType'] . '.log';
 
         //记录日志
-        $collectObj = new \Slog\Collect\File($file, $lock);
+        $collectObj = new \ssphp\Collect\File($file, $lock);
         $collectObj->write($formatterObj->format($data));
         $collectObj->close();
         return true;
