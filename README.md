@@ -25,7 +25,7 @@ ssphp完全参照<a href="https://github.com/ssgo/standard/blob/master/log.md">s
 Install the latest version with
 
 ```bash
-$ composer require slog/slog
+$ composer require ssphp/log
 ```
 
 ## Basic Usage
