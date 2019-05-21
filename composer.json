@@ -13,7 +13,7 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=7.0.0",
-        "ssphp/standard-log": "~1.0"
+        "ssphp/standard-log": "~1.1"
     },
     "autoload": {
         "psr-4": {
