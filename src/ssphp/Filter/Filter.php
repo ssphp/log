@@ -51,7 +51,7 @@ class Filter
 
             //多维数组暂时不处理
             if (is_array($v) || is_object($v)) {
-                $v = json_encode($v, JSON_UNESCAPED_UNICODE);
+                $v = json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
             } else if (!is_string($v) && !is_numeric($v)) {
                 continue;
             }

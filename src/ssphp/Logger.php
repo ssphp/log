@@ -104,10 +104,10 @@ class Logger extends AbstractLogger
         $message = array_merge($this->baseContent($logType), $message);
         $logFields = $this->getFields($logType);
 
-        if (!$this->checkLogFields($message, $logFields)) {
+        if (!empty($msg = $this->checkLogFields($message, $logFields))) {
             return [
                 'code' => '0x000002',
-                'message' => '日志内容缺少必填字段',
+                'message' => $msg,
             ];
         }
 
@@ -125,21 +125,45 @@ class Logger extends AbstractLogger
      * @param  array  $message
      * @param  array  $logFields
      *
-     * @return bool
+     * @return  string
      */
     public function checkLogFields(array $message, array $logFields)
     {
         if (empty($logFields)) {
-            return true;
+            return "";
         }
 
-        foreach ($logFields as $field) {
+        foreach ($logFields as $field => $type) {
             if (!isset($message[$field])) {
-                return false;
+                return "缺少" . $field . "字段";
+            }
+            //检查变量类型
+            switch ($type) {
+                case 'string':
+                    $bool = is_string($message[$field]);
+                    break;
+                case 'float64':
+                case 'float32':
+                    $bool = is_int($message[$field]) || is_float($message[$field]) ? true : false;
+                    break;
+                case 'int':
+                case 'uint':
+                    $bool = is_int($message[$message[$field]]);
+                    break;
+                case 'bool':
+                    $bool = is_bool($message[$message[$field]]);
+                    break;
+                default:
+                    $bool = true;
+                    break;
+            }
+
+            if (!$bool) {
+                return "字段" . $field . "类型不正确";
             }
         }
 
-        return true;
+        return "";
     }
 
     /**

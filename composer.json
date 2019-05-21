@@ -5,18 +5,19 @@
     "homepage": "https://github.com/ssphp/log.git",
     "type": "library",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "qishaobo",
-            "email": "qishaobo@hfjy.com"
-        }
-    ],
+    "version": "1.1.0",
+    "authors": [{
+        "name": "qishaobo",
+        "email": "qishaobo@hfjy.com"
+    }],
     "minimum-stability": "dev",
     "require": {
         "php": ">=7.0.0",
         "ssphp/standard-log": "~1.0"
     },
     "autoload": {
-        "psr-4": {"ssphp\\": "src/ssphp"}
+        "psr-4": {
+            "ssphp\\": "src/ssphp"
+        }
     }
 }
