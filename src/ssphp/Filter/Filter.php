@@ -51,7 +51,16 @@ class Filter
 
             //多维数组暂时不处理
             if (is_array($v) || is_object($v)) {
-                $v = json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                foreach ($v as $key => $val) {
+                    if (!is_string($key) || !is_string($val)) {
+                        continue;
+                    }
+
+                    if (in_array($key, self::$filter['sensitive'])) {
+                        $data[$k][$key] = $this->filterValue($val);
+                    }
+                }
+                continue;
             } else if (!is_string($v) && !is_numeric($v)) {
                 continue;
             }
