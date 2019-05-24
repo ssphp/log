@@ -148,10 +148,10 @@ class Logger extends AbstractLogger
                     break;
                 case 'int':
                 case 'uint':
-                    $bool = is_int($message[$message[$field]]);
+                    $bool = is_int($message[$field]);
                     break;
                 case 'bool':
-                    $bool = is_bool($message[$message[$field]]);
+                    $bool = is_bool($message[$field]);
                     break;
                 default:
                     $bool = true;
