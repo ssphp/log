@@ -37,7 +37,7 @@ class Logger extends AbstractLogger
      */
     private function initConfig(array $config = [])
     {
-        $baseConfig = require __DIR__ . '/../../config/log.php';
+        $baseConfig = require __DIR__ . '/../../logConfig/log.php';
         if (empty($config)) {
             self::$config = $baseConfig;
             return;
