@@ -43,32 +43,50 @@ class Filter
             $data['callStacks'] = $this->truncations($data['callStacks']);
         }
 
-        foreach ($data as $k => $v) {
+        $level = isset(self::$filter['recursiveLevel']) ? self::$filter['recursiveLevel'] : 4;
+        $this->recursiveFilter($data, $level);
+
+        return $data;
+    }
+
+    /**
+     * 递归过滤
+     *
+     * @param  array  &$data 过滤数据
+     * @param  integer $level  过滤层级
+     *
+     * @return
+     */
+    private function recursiveFilter(&$data, $level, $start = 0)
+    {
+        if (!is_array($data) && !is_object($data)) {
+            return;
+        }
+
+        if ($start > $level) {
+            return;
+        }
+
+        $start++;
+
+        foreach ($data as $k => &$v) {
             //不过滤字段
             if (in_array($k, ['callStacks', 'logTime', 'traceId', 'logType'])) {
                 continue;
             }
 
-            //多维数组暂时不处理
-            if (is_array($v) || is_object($v)) {
-                foreach ($v as $key => $val) {
-                    if (!is_string($key) || !is_string($val)) {
-                        continue;
-                    }
-
-                    if (in_array($key, self::$filter['sensitive'])) {
-                        $data[$k][$key] = $this->filterValue($val);
-                    }
-                }
-                continue;
-            } else if (!is_string($v) && !is_numeric($v)) {
-                continue;
-            }
-
             //key值过滤
             if (!empty(self::$filter['sensitive'])) {
+                //数组、对象
+                if (is_array($v) || is_object($v)) {
+                    $this->recursiveFilter($v, $level, $start);
+                } else if (!is_string($v) && !is_numeric($v)) {
+                    continue;
+                }
+
+                //字符串
                 if (in_array($k, self::$filter['sensitive'])) {
-                    $data[$k] = $this->filterValue($v);
+                    $v = $this->filterValue($v);
                     continue;
                 }
             }
@@ -84,8 +102,6 @@ class Filter
                 }
             }
         }
-
-        return $data;
     }
 
     /**

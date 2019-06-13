@@ -16,4 +16,6 @@ return [
     'file' => '',
     //日志内容格式
     'formatter' => 'Json',
+    //脱敏层级
+    'recursiveLevel' => 4
 ];
